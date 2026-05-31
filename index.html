@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SON · Semantic Oracle Network</title>
+<meta name="description" content="SON is a semantic oracle network for validating intent before execution. Commands cost one cent. Raw intent in. Consensus command out." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f6f7f4;
+  --paper2:#ffffff;
+  --ink:#050607;
+  --soft:#d7dbd8;
+  --line:#050607;
+  --muted:#4f5658;
+  --dim:#8a9193;
+  --black:#030405;
+  --black2:#0a0c0d;
+  --white:#f6f7f4;
+  --green:#00b978;
+  --peach:#ffb08a;
+  --magenta:#ff4fb8;
+  --red:#d9342b;
+  --violet:#4d46ff;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --disp:'Inter Tight','Helvetica Neue',Arial,sans-serif;
+}
+html{scroll-behavior:smooth;background:var(--paper)}
+body{background:var(--paper);color:var(--ink);font-family:var(--disp);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.45}
+::selection{background:var(--ink);color:var(--paper)}
+button,textarea{font:inherit}
+button{border:0;background:none;color:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* ===== TOP BAR ===== */
+.topbar{position:fixed;top:0;left:0;right:0;height:58px;background:var(--paper);border-bottom:1px solid var(--line);z-index:90;display:grid;grid-template-columns:160px 1fr auto;align-items:center}
+.mark{height:58px;border-right:1px solid var(--line);display:flex;align-items:center;padding:0 20px;font-weight:700;letter-spacing:-.03em;font-size:24px}
+.nav{display:flex;align-items:center;height:58px;overflow:hidden}
+.nav a{height:58px;display:flex;align-items:center;padding:0 18px;border-right:1px solid var(--line);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.nav a:hover{background:var(--ink);color:var(--paper)}
+.stat{height:58px;border-left:1px solid var(--line);display:flex;align-items:center;padding:0 20px;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;padding-top:58px;display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,520px);border-bottom:1px solid var(--line)}
+.hero-left{min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.poster{min-height:44vh;border-bottom:1px solid var(--line);padding:42px 44px 34px;display:grid;grid-template-rows:auto 1fr auto;position:relative;overflow:hidden}
+.signal-shapes{position:absolute;right:34px;top:86px;width:172px;height:172px;pointer-events:none}
+.sig{position:absolute;display:block;border:1px solid var(--line);background:var(--paper)}
+.sig.a{width:42px;height:42px;right:0;top:0;background:var(--magenta);animation:tickA 4.8s steps(1) infinite}
+.sig.b{width:92px;height:18px;right:54px;top:58px;background:var(--peach);animation:tickB 6.2s steps(1) infinite}
+.sig.c{width:18px;height:92px;right:26px;top:80px;background:var(--green);animation:tickC 5.4s steps(1) infinite}
+.sig.d{width:70px;height:70px;right:96px;top:98px;background:transparent}
+@keyframes tickA{0%,72%,100%{transform:translate(0,0)}24%{transform:translate(-12px,0)}48%{transform:translate(-12px,12px)}}
+@keyframes tickB{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.58);transform-origin:right}}
+@keyframes tickC{0%,100%{transform:translateY(0)}33%{transform:translateY(-14px)}66%{transform:translateY(10px)}}
+.kicker{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:flex;gap:10px;align-items:center}
+.kicker:before{content:"";width:8px;height:8px;background:var(--green);display:inline-block}
+.kicker:after{content:"";width:8px;height:8px;background:var(--magenta);display:inline-block;margin-left:2px}
+.poster h1{font-family:var(--disp);font-weight:700;font-size:clamp(86px,16vw,238px);line-height:.74;letter-spacing:-.095em;text-transform:uppercase;margin-top:34px;color:var(--ink)}
+.poster .statement{display:grid;grid-template-columns:minmax(180px,.42fr) minmax(260px,.58fr);gap:36px;align-items:end;margin-top:40px}
+.statement b{font-size:clamp(24px,3vw,40px);line-height:1;letter-spacing:-.04em;text-transform:uppercase;font-weight:700;max-width:11ch}
+.statement p{font-family:var(--mono);font-size:13px;line-height:1.72;color:var(--muted);max-width:68ch}
+
+.intent-panel{padding:34px 44px 40px;display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:24px;align-items:start}
+.input-box{border:1px solid var(--line);background:var(--paper2)}
+.input-head{height:38px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.input-head span:last-child{color:var(--green)}
+#intent{display:block;width:100%;min-height:168px;background:transparent;border:0;outline:0;resize:none;color:var(--ink);font-family:var(--disp);font-weight:700;font-size:clamp(22px,2.6vw,38px);line-height:1.1;letter-spacing:-.035em;padding:20px;caret-color:var(--green);overflow:hidden}
+#intent::placeholder{color:var(--dim)}
+.controls{border:1px solid var(--line);background:var(--paper2)}
+.controls h3{height:38px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 12px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:500}
+.scenario{display:block;width:100%;text-align:left;padding:13px 12px;border-bottom:1px solid var(--soft);font-family:var(--mono);font-size:10px;line-height:1.35;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.scenario:hover,.scenario.active{background:var(--ink);color:var(--paper)}
+.scenario:last-child{border-bottom:0}
+
+/* ===== VALIDATOR CONSOLE ===== */
+.console{background:var(--black);color:var(--white);display:flex;flex-direction:column;min-width:0}
+.console-head{height:58px;border-bottom:1px solid #2b2b2b;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#8b8b8b}
+.console-head b{font-weight:500;color:var(--green)}
+.verdict{padding:26px 22px;border-bottom:1px solid #2b2b2b}
+.verdict .label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#777;margin-bottom:12px}
+#verdictName{font-family:var(--disp);font-weight:700;font-size:clamp(38px,4.7vw,76px);line-height:.86;letter-spacing:-.05em;text-transform:uppercase;min-height:1.7em;color:var(--white);transition:opacity .16s}
+#verdictName.swap{opacity:0}
+.why{font-family:var(--mono);font-size:12px;line-height:1.62;color:#989898;margin-top:18px;min-height:54px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #2b2b2b;margin-top:20px}
+.metric{padding:14px 10px;border-right:1px solid #2b2b2b;font-family:var(--mono)}
+.metric:last-child{border-right:0}
+.metric span{display:block;color:#606060;font-size:9px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.metric b{font-size:13px;color:var(--white);font-weight:500}
+.metric b.hot{color:var(--green)}
+.metric:nth-child(2) b{color:var(--peach)}
+.metric:nth-child(3) b{color:var(--magenta)}
+.rhead{height:42px;border-bottom:1px solid #2b2b2b;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#777}
+.ranks{flex:1;overflow:auto;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.ranks::-webkit-scrollbar{width:8px}.ranks::-webkit-scrollbar-track{background:transparent}.ranks::-webkit-scrollbar-thumb{background:#333}
+.rank{position:relative;min-height:48px;display:grid;grid-template-columns:34px minmax(0,1fr) 60px;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid #202020;font-family:var(--mono);overflow:hidden}
+.rank .bar{position:absolute;left:0;top:0;bottom:0;background:#0d241d;width:0;transition:width .48s ease;z-index:0}
+.rank.top .bar{background:#103a2f}
+.rank>*{position:relative;z-index:1}
+.rank .n{font-size:10px;color:#5c5c5c}
+.rank.top .n{color:var(--green)}
+.rank .nm{font-family:var(--disp);font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#8f8f8f;text-transform:uppercase;letter-spacing:-.01em}
+.rank.top .nm{color:var(--white)}
+.rank .sc{text-align:right;font-size:10px;color:#666}
+.rank.top .sc{color:var(--green)}
+
+/* ===== CONTENT ===== */
+.wrap{max-width:1220px;margin:0 auto;padding:0 34px}
+.section{padding:104px 0;border-bottom:1px solid var(--line)}
+.section-head{display:grid;grid-template-columns:minmax(220px,.42fr) minmax(300px,.58fr);gap:46px;align-items:end;margin-bottom:36px}
+.eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--green);margin-bottom:16px}
+.section h2{font-family:var(--disp);font-weight:700;font-size:clamp(38px,5vw,74px);line-height:.9;letter-spacing:-.055em;text-transform:uppercase;max-width:10ch}
+.section-head p{font-family:var(--mono);font-size:13px;line-height:1.74;color:var(--muted);max-width:72ch}
+.thesis{padding:112px 0;border-bottom:1px solid var(--line)}
+.thesis p:first-child{font-family:var(--disp);font-size:clamp(34px,5vw,76px);font-weight:700;line-height:.96;letter-spacing:-.052em;max-width:17ch;text-transform:uppercase}
+.thesis em{font-style:normal;color:var(--green)}
+.thesis .sub{font-family:var(--mono);font-size:14px;line-height:1.78;color:var(--muted);max-width:78ch;margin-top:32px}
+
+.arch{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:var(--paper2)}
+.arch-card{min-height:218px;padding:22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.arch-card:nth-child(3n){border-right:0}
+.arch-top{display:flex;justify-content:space-between;margin-bottom:30px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+.arch-top b{color:var(--green);font-weight:600}
+.arch-card:nth-child(2) .arch-top b,.arch-card:nth-child(5) .arch-top b{color:var(--magenta)}
+.arch-card:nth-child(3) .arch-top b,.arch-card:nth-child(6) .arch-top b{color:var(--peach)}
+.arch-card h3{font-size:22px;line-height:.96;letter-spacing:-.025em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+.arch-card p{font-family:var(--mono);font-size:11.6px;line-height:1.65;color:var(--muted)}
+
+.diagram{border:1px solid var(--line);background:var(--paper2);font-family:var(--mono);font-size:12px;color:var(--muted);overflow:hidden}
+.diagram-row{display:grid;grid-template-columns:190px 1fr;border-bottom:1px solid var(--line)}
+.diagram-row:last-child{border-bottom:0}
+.diagram-label{padding:18px;border-right:1px solid var(--line);text-transform:uppercase;font-size:10px;letter-spacing:.05em;color:var(--ink)}
+.diagram-body{padding:18px;line-height:1.7}
+.diagram-body b{color:var(--ink);font-weight:600}
+
+.econ{display:grid;grid-template-columns:minmax(280px,.72fr) minmax(320px,1.28fr);border:1px solid var(--line);background:var(--paper2)}
+.econ-left{border-right:1px solid var(--line);padding:26px;display:flex;flex-direction:column;min-height:520px}
+.econ-left .small{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--green);margin-bottom:24px}
+.econ-left h3{font-size:clamp(34px,4.7vw,72px);line-height:.88;letter-spacing:-.055em;text-transform:uppercase;font-weight:700;max-width:8ch;margin-bottom:28px}
+.econ-left p{font-family:var(--mono);font-size:12.5px;line-height:1.72;color:var(--muted);max-width:48ch;margin-top:auto}
+.econ-right{display:grid;grid-template-columns:repeat(2,1fr)}
+.econ-card{min-height:260px;padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.econ-card:nth-child(2n){border-right:0}
+.econ-card:nth-last-child(-n+2){border-bottom:0}
+.econ-card .num{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:44px}
+.econ-card h4{font-size:24px;line-height:.96;letter-spacing:-.03em;text-transform:uppercase;font-weight:700;margin-bottom:14px;max-width:10ch}
+.econ-card p{font-family:var(--mono);font-size:11.5px;line-height:1.64;color:var(--muted)}
+.econ-card strong{color:var(--ink);font-weight:600}
+.econ-card:after{content:"";position:absolute;right:18px;top:18px;width:16px;height:16px;background:var(--green);border:1px solid var(--line)}
+.econ-card:nth-child(2):after{background:var(--magenta)}
+.econ-card:nth-child(3):after{background:var(--peach)}
+.econ-card:nth-child(4):after{background:transparent}
+.gasbox{margin-top:22px;border:1px solid var(--line);background:var(--black);color:var(--white);font-family:var(--mono)}
+.gasbox-head{height:38px;border-bottom:1px solid #2b2b2b;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#888}
+.gasbox-body{padding:18px;font-size:12px;line-height:1.78;color:#b8b8b8;overflow:auto}
+.gasbox-body b{color:var(--green);font-weight:500}
+.gasbox-body i{color:var(--magenta);font-style:normal}
+.gasbox-body em{color:var(--peach);font-style:normal}
+.tiers{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-top:0;background:var(--paper2)}
+.tier{min-height:146px;padding:18px;border-right:1px solid var(--line)}
+.tier:last-child{border-right:0}
+.tier span{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim)}
+.tier b{display:block;font-size:20px;line-height:.95;letter-spacing:-.025em;text-transform:uppercase;margin:34px 0 10px;font-weight:700}
+.tier p{font-family:var(--mono);font-size:10.5px;line-height:1.55;color:var(--muted)}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:var(--paper2)}
+.step{min-height:230px;padding:24px;border-right:1px solid var(--line)}
+.step:last-child{border-right:0}
+.step .num{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:70px}
+.step:nth-child(2) .num{color:var(--magenta)}
+.step:nth-child(3) .num{color:var(--peach)}
+.step h3{text-transform:uppercase;font-size:20px;line-height:.98;letter-spacing:-.018em;margin-bottom:12px;font-weight:700}
+.step p{font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--muted)}
+
+.codewrap{margin-top:28px;border:1px solid var(--line);background:var(--black);overflow:hidden}
+.codehead{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #2b2b2b;font-family:var(--mono);font-size:10px;text-transform:uppercase;color:#777}
+.copy{color:var(--green);cursor:pointer}
+pre{padding:22px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#a9b2ba;overflow:auto;white-space:pre}
+pre .tk{color:#ff8a5c}pre .ts{color:var(--green)}pre .tu{color:#7fb8ff}
+.endcap{padding:112px 0;border-bottom:1px solid var(--line)}
+.endcap-grid{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(280px,1.1fr);gap:58px;align-items:start}
+.endcap h2{font-family:var(--disp);font-size:clamp(42px,6vw,92px);line-height:.88;letter-spacing:-.06em;text-transform:uppercase;font-weight:700;max-width:10ch}
+.endcap p{font-family:var(--mono);font-size:13px;line-height:1.78;color:var(--muted);max-width:72ch}
+.footer-grid{padding:34px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;background:var(--paper);font-family:var(--mono);border-top:1px solid var(--line)}
+.footer-cell{min-height:120px;border-left:1px solid var(--line);padding-left:18px}
+.footer-cell:first-child{border-left:0;padding-left:0}
+.footer-cell span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:14px}
+.footer-cell:nth-child(2) span{color:var(--magenta)}
+.footer-cell:nth-child(3) span{color:var(--peach)}
+.footer-cell b{display:block;font-family:var(--disp);font-size:28px;line-height:.95;letter-spacing:-.035em;text-transform:uppercase;color:var(--ink);font-weight:700;margin-bottom:12px}
+.footer-cell p{font-size:11.5px;line-height:1.65;color:var(--muted);max-width:42ch}
+footer{padding:18px 34px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);background:var(--black);border-top:1px solid var(--line)}
+footer b{color:var(--white);font-weight:600}
+
+@media(max-width:1040px){
+  .hero{grid-template-columns:1fr}
+  .hero-left{border-right:0}
+  .console{min-height:72vh}
+  .section-head,.poster .statement,.endcap-grid{grid-template-columns:1fr}
+  .arch{grid-template-columns:repeat(2,1fr)}
+  .arch-card:nth-child(3n){border-right:1px solid var(--line)}
+  .arch-card:nth-child(2n){border-right:0}
+  .econ{grid-template-columns:1fr}
+  .econ-left{border-right:0;border-bottom:1px solid var(--line);min-height:auto}
+  .tiers{grid-template-columns:1fr 1fr}
+  .tier{border-bottom:1px solid var(--line)}
+  .tier:nth-child(2n){border-right:0}
+  .steps{grid-template-columns:1fr 1fr}
+  .step:nth-child(2n){border-right:0}
+  .diagram-row{grid-template-columns:1fr}
+  .diagram-label{border-right:0;border-bottom:1px solid var(--line)}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-cell{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:22px}
+  .footer-cell:first-child{border-top:0;padding-top:0}
+}
+@media(max-width:680px){
+  .signal-shapes{right:18px;top:76px;transform:scale(.62);transform-origin:top right}
+  .topbar{grid-template-columns:110px 1fr}
+  .mark{font-size:20px;padding:0 16px}
+  .nav{display:none}
+  .stat{border-left:1px solid var(--line);font-size:10px;padding:0 12px}
+  .poster{padding:34px 22px}
+  .intent-panel{grid-template-columns:1fr;padding:26px 22px}
+  .controls{display:none}
+  .wrap{padding:0 20px}
+  .section{padding:78px 0}
+  .thesis{padding:82px 0}
+  .arch,.steps,.econ-right,.tiers{grid-template-columns:1fr}
+  .arch-card,.arch-card:nth-child(2n),.arch-card:nth-child(3n),.step,.econ-card,.econ-card:nth-child(2n),.tier,.tier:nth-child(2n){border-right:0}
+  .econ-card:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+  .econ-card:last-child{border-bottom:0}
+  .metrics{grid-template-columns:1fr 1fr}
+  .poster h1{letter-spacing:-.075em}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="mark">SON</div>
+  <nav class="nav">
+    <a href="#architecture">Architecture</a>
+    <a href="#consensus">Consensus</a>
+    <a href="#economics">Gas</a>
+    <a href="#api">API</a>
+  </nav>
+  <div class="stat" id="navStat">Semantic Oracle Network</div>
+</header>
+
+<main class="hero">
+  <section class="hero-left">
+    <div class="poster">
+      <div class="kicker">Semantic Oracle Network</div>
+      <div class="signal-shapes" aria-hidden="true"><span class="sig a"></span><span class="sig b"></span><span class="sig c"></span><span class="sig d"></span></div>
+      <h1>SON</h1>
+      <div class="statement">
+        <b>Intent becomes consensus.</b>
+        <p>SON validates meaning before execution. Raw intent is scored by deterministic validator engines, converted into a consensus command, and handed to contracts, solvers, vaults, bridges, or review gates.</p>
+      </div>
+    </div>
+    <div class="intent-panel">
+      <div class="input-box">
+        <div class="input-head"><span>Broadcast raw intent</span><span id="tagText">ready</span></div>
+        <textarea id="intent" rows="3" spellcheck="false" placeholder="Swap across chains with lowest safe slippage and no bridge exposure…"></textarea>
+      </div>
+      <aside class="controls">
+        <h3>Test payloads</h3>
+        <div id="scenarioStrip"></div>
+      </aside>
+    </div>
+  </section>
+
+  <aside class="console">
+    <div class="console-head"><span>Validator surface</span><b id="mode">local</b></div>
+    <div class="verdict">
+      <div class="label">consensus command</div>
+      <div id="verdictName">—</div>
+      <div class="why" id="why">Awaiting semantic validation.</div>
+      <div class="metrics">
+        <div class="metric"><span>Coherence</span><b class="hot" id="mScore">—</b></div>
+        <div class="metric"><span>Gap</span><b id="mGap">—</b></div>
+        <div class="metric"><span>Resolve</span><b id="mLat">—</b></div>
+        <div class="metric"><span>Commands</span><b id="mPaths">—</b></div>
+      </div>
+    </div>
+    <div class="rhead"><span>commands ranked</span><span id="rcount">0</span></div>
+    <div class="ranks" id="ranks"></div>
+  </aside>
+</main>
+
+<div class="wrap">
+  <section class="thesis">
+    <p>Oracles report facts. <em>SON validates intent.</em></p>
+    <p class="sub">A price oracle answers: what is the asset worth? SON answers: which action coheres with the stated intent, constraints, and risk posture? The result is not prose. It is a ranked command surface: winner, score, gap, and escalation condition.</p>
+  </section>
+
+  <section class="section" id="architecture">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">01 / Architecture</div>
+        <h2>Meaning enters the chain.</h2>
+      </div>
+      <p>SON is not another exchange, wallet, bridge, or solver. It is a semantic validation layer above execution infrastructure. Validators run local deterministic engines and converge on the command that best matches the broadcast intent.</p>
+    </div>
+    <div class="arch" id="archGrid"></div>
+  </section>
+
+  <section class="section" id="consensus">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">02 / Consensus</div>
+        <h2>Proof-of-coherence.</h2>
+      </div>
+      <p>Execution should not begin until meaning is resolved. SON compares validator score surfaces, confirms the winning command, verifies the gap, and escalates when semantic consensus is too narrow or divergent.</p>
+    </div>
+    <div class="diagram">
+      <div class="diagram-row"><div class="diagram-label">Input</div><div class="diagram-body"><b>Raw intent</b> plus candidate commands: swap, bridge, settle, custody, review, block, or escalate.</div></div>
+      <div class="diagram-row"><div class="diagram-label">Validation</div><div class="diagram-body"><b>Local engines</b> compute deterministic coherence scores against the same candidate surface.</div></div>
+      <div class="diagram-row"><div class="diagram-label">Consensus</div><div class="diagram-body"><b>Winner + gap</b> are accepted when validator outputs fall inside divergence bounds.</div></div>
+      <div class="diagram-row"><div class="diagram-label">Output</div><div class="diagram-body"><b>Semantic command</b> routes to execution infrastructure or pauses for review.</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="economics">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">03 / Semantic Gas</div>
+        <h2>Commands cost a penny.</h2>
+      </div>
+      <p>SON is spendable command credit. Users buy SON, spend it per validated command, and the protocol burns or routes the fee. The buyer sees a simple price: one cent per semantic command. The token is plumbing, not the headline.</p>
+    </div>
+    <div class="econ">
+      <div class="econ-left">
+        <div class="small">Prepaid command credits</div>
+        <h3>$20 = 2,000 commands.</h3>
+        <div class="gasbox">
+          <div class="gasbox-head"><span>Command pricing</span><span>USD fixed</span></div>
+          <div class="gasbox-body">
+            <b>command_cost</b> = $0.01<br>
+            <i>SON_spent</i> = $0.01 / SON_USD<br>
+            <em>$20 SON</em> = 2,000 commands<br>
+            $100 SON = 10,000 commands<br>
+            $1,000 SON = 100,000 commands
+          </div>
+        </div>
+        <p>The user does not calculate token units. They buy balance, route commands, and spend one cent of SON per resolved semantic decision.</p>
+      </div>
+      <div class="econ-right">
+        <article class="econ-card"><div class="num">01 / Buy</div><h4>Prepaid SON</h4><p><strong>SON behaves like API credit.</strong> Wallets, dApps, solvers, and enterprises pre-buy balance and spend it as commands are resolved.</p></article>
+        <article class="econ-card"><div class="num">02 / Spend</div><h4>One cent command</h4><p>Pricing is published in USD, not token units. If SON trades higher, fewer tokens are consumed. The command still costs one cent.</p></article>
+        <article class="econ-card"><div class="num">03 / Burn</div><h4>Usage sink</h4><p>Every validated command consumes SON. High-frequency integrations burn through balance quickly and refill before execution paths run dry.</p></article>
+        <article class="econ-card"><div class="num">04 / Scale</div><h4>Volume float</h4><p>Low-frequency users leave prepaid balance in the protocol. High-frequency users create recurring command demand through wallet, dApp, and solver integrations.</p></article>
+      </div>
+    </div>
+    <div class="tiers">
+      <div class="tier"><span>$5</span><b>Starter</b><p>500 commands for testing wallets, demos, and small dApps.</p></div>
+      <div class="tier"><span>$20</span><b>Builder</b><p>2,000 commands. The default developer balance.</p></div>
+      <div class="tier"><span>$100</span><b>Integration</b><p>10,000 commands for active apps and solver prototypes.</p></div>
+      <div class="tier"><span>$1,000</span><b>Protocol</b><p>100,000 commands for production routing and high-frequency use.</p></div>
+      <div class="tier"><span>Custom</span><b>Enterprise</b><p>Committed command volume, audit surfaces, and private policy controls.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">04 / Function</div>
+        <h2>Before the solver.</h2>
+      </div>
+      <p>Solvers optimize execution. SON validates the command. That distinction matters: a system cannot optimize a route until it understands what the user actually asked to preserve, avoid, or accomplish.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h3>Broadcast</h3><p>Wallet, dApp, enterprise system, or contract submits raw intent and candidate command surface.</p></div>
+      <div class="step"><div class="num">02</div><h3>Score</h3><p>Validators run local deterministic engines and produce coherence scores for each command.</p></div>
+      <div class="step"><div class="num">03</div><h3>Converge</h3><p>Network accepts the winner only when score surfaces and gap metrics satisfy consensus rules.</p></div>
+      <div class="step"><div class="num">04</div><h3>Command</h3><p>Result routes to solver, bridge, vault, custody workflow, compliance lane, human review, or no-route safeguard.</p></div>
+    </div>
+    <div class="codewrap" id="api">
+      <div class="codehead"><span>POST /public/compare</span><span class="copy" id="copyCode">copy</span></div>
+      <pre id="codeBlock"></pre>
+    </div>
+  </section>
+
+  <section class="endcap">
+    <div class="endcap-grid">
+      <h2>Not another solver.</h2>
+      <p>Solvers compete over execution. SON validates the command before execution exists. It is the layer that says: this is the intended action, this is the score surface, this is the gap, and this is where the system must route next.</p>
+    </div>
+  </section>
+</div>
+
+<div class="footer-grid">
+  <div class="footer-cell"><span>Layer</span><b>Semantic Oracle Network</b><p>Protocol surface for validating raw intent before contracts, solvers, bridges, vaults, or review lanes execute.</p></div>
+  <div class="footer-cell"><span>Primitive</span><b>One Cent Command</b><p>SON is spent as prepaid semantic gas: one cent per resolved command, charged in USD value and consumed in token units.</p></div>
+  <div class="footer-cell"><span>Output</span><b>Consensus Command</b><p>The accepted command routes to execution infrastructure or stops at no-route, policy, or human-review safeguards.</p></div>
+</div>
+
+<footer>
+  <span>SON · Semantic Oracle Network</span>
+  <span><b>Intent in. One cent command out.</b></span>
+  <span>api.arbiter.traut.ai</span>
+</footer>
+
+<script>
+const API='https://api.arbiter.traut.ai/public/compare';
+
+const COMMANDS=[
+  {code:'SOLVER',name:'Route to Solver',category:'Execution',tags:['solver','outcome','intent'],candidate:'Command: route to solver network. Use when the intent specifies an outcome and competing solvers should fulfill it across venues, chains, liquidity paths, and settlement options.'},
+  {code:'CROSS_SWAP',name:'Cross-Chain Swap',category:'Execution',tags:['bridge','swap','cross-chain'],candidate:'Command: cross-chain swap. Use when the user wants asset A on chain X converted into asset B on chain Y without manually choosing the bridge, pool, or route.'},
+  {code:'DEX_AGG',name:'DEX Aggregation',category:'Execution',tags:['dex','swap','slippage'],candidate:'Command: DEX aggregation. Use for permissionless swaps, split routing, price discovery, low custody risk, and assets with sufficient on-chain liquidity.'},
+  {code:'CEX_LIQ',name:'CEX Liquidity',category:'Execution',tags:['cex','listed','liquidity'],candidate:'Command: centralized exchange liquidity. Use for listed assets with deep books, fiat rails, institutional liquidity, and fast execution inside a custodial venue.'},
+  {code:'BRIDGE',name:'Bridge Route',category:'Cross-chain',tags:['bridge','finality','risk'],candidate:'Command: bridge aggregation. Use when assets must move between chains and the intent specifies tradeoffs around speed, cost, finality, and bridge risk.'},
+  {code:'OTC',name:'RFQ / OTC',category:'Execution',tags:['otc','rfq','large trade'],candidate:'Command: RFQ or OTC execution. Use for large trades where minimizing market impact, slippage, and information leakage matters more than immediate on-chain transparency.'},
+  {code:'STABLE',name:'Stable Settlement',category:'Settlement',tags:['stablecoin','settlement','payment'],candidate:'Command: stablecoin settlement. Use for payments, treasury transfers, cross-border value movement, and avoiding volatile asset exposure.'},
+  {code:'CUSTODY',name:'Qualified Custody',category:'Institutional',tags:['custody','institutional','qualified'],candidate:'Command: qualified custody. Use when institutional users require approved custodians, account policy, permissions, insurance posture, and regulated asset handling before execution.'},
+  {code:'COMPLIANCE',name:'Compliance Review',category:'Institutional',tags:['compliance','kyc','aml'],candidate:'Command: compliance review. Use for KYC, AML, sanctions screening, jurisdiction checks, asset restrictions, wallet risk, transaction policy, and enterprise governance before execution.'},
+  {code:'POLICY',name:'Policy Gate',category:'Institutional',tags:['policy','approvals','controls'],candidate:'Command: policy gate. Use for transaction limits, approvals, wallet permissions, asset allowlists, counterparty restrictions, and travel-rule requirements.'},
+  {code:'MEV',name:'MEV Protection',category:'Risk',tags:['mev','private mempool','protection'],candidate:'Command: MEV-protected execution. Use private order flow, auctions, batching, or protected relays when front-running, sandwich risk, or adverse execution is a primary concern.'},
+  {code:'LOW_FEE',name:'Lowest Fee',category:'Optimization',tags:['cheap','gas','fees'],candidate:'Command: lowest-fee execution. Use when gas minimization, low bridge fees, low venue fees, and inexpensive settlement matter more than speed or maximum execution quality.'},
+  {code:'FAST',name:'Fastest Finality',category:'Optimization',tags:['fast','finality','urgent'],candidate:'Command: fastest settlement. Use when time-to-finality, immediate liquidity access, rapid bridge completion, and low waiting time matter more than fees or slippage.'},
+  {code:'BEST_PRICE',name:'Best Price',category:'Optimization',tags:['price','slippage','quality'],candidate:'Command: best execution price. Use when quoted output, slippage tolerance, venue depth, split routing, and execution quality matter more than speed.'},
+  {code:'SAFE',name:'Safest Route',category:'Risk',tags:['safe','risk','conservative'],candidate:'Command: safest route. Use when audited venues, canonical bridges, known counterparties, mature liquidity, and conservative settlement assumptions matter more than novelty or speed.'},
+  {code:'DISCOVERY',name:'Asset Discovery',category:'Access',tags:['discovery','unlisted','reachable'],candidate:'Command: asset discovery. Use when an asset is not listed on centralized venues but may have verified contracts, market data, on-chain liquidity, and reachable execution paths.'},
+  {code:'NO_ROUTE',name:'No Route',category:'Risk',tags:['block','unsafe','reject'],candidate:'Command: no route. Use when liquidity is unsafe, wallet risk is high, compliance checks fail, asset identity is ambiguous, or the requested outcome cannot be fulfilled safely.'},
+  {code:'HUMAN',name:'Human Review',category:'Risk',tags:['review','ambiguous','manual'],candidate:'Command: human review. Use for ambiguous, high-value, regulated, unusual, or conflicting intents where automated execution should request confirmation or policy review.'},
+  {code:'REBAL',name:'Portfolio Rebalance',category:'Execution',tags:['rebalance','portfolio','allocation'],candidate:'Command: portfolio rebalance. Use when target allocation must become multiple trades, routes, venues, and settlement actions while minimizing drift, slippage, and unnecessary turnover.'},
+  {code:'TWAP',name:'TWAP / Limit',category:'Execution',tags:['twap','limit','strategy'],candidate:'Command: TWAP or limit strategy. Use when reducing market impact, controlling entry price, and executing over time matters more than immediate spot liquidity.'},
+  {code:'L2',name:'L2 Native',category:'Cross-chain',tags:['l2','rollup','native'],candidate:'Command: L2-native route. Use when execution should stay inside a specific rollup or L2 ecosystem to minimize fees, preserve app composability, and avoid unnecessary L1 settlement.'},
+  {code:'APP_NATIVE',name:'App Native',category:'Execution',tags:['app','protocol','native'],candidate:'Command: app-native execution. Use when the desired outcome is achieved most coherently inside a specific protocol rather than through generic aggregation.'},
+  {code:'ORACLE_ESC',name:'Oracle Escalation',category:'Protocol',tags:['oracle','divergence','consensus'],candidate:'Command: oracle escalation. Use when validator score surfaces diverge, the top-two gap is too narrow, or semantic consensus is insufficient for automatic execution.'},
+  {code:'NEGATIVE',name:'Negative Constraint',category:'Protocol',tags:['negative','constraint','avoid'],candidate:'Command: enforce negative constraints. Use when the intent explicitly says what must not happen, such as no custody risk, no bridge exposure, no sanctioned counterparty, no high-fee path, or no automatic execution.'}
+].map((d,id)=>({...d,id}));
+
+const CANDIDATES=COMMANDS.map(d=>d.candidate);
+const EXAMPLES=[
+  'Intent: swap ETH on mainnet into USDC on Base. User wants one outcome, lowest safe slippage, and does not want to manually choose a bridge or pool.',
+  'Intent: acquire $250k of a liquid token with minimum slippage and minimal information leakage. Do not move the market.',
+  'Intent: institutional treasury wants exposure to a listed asset but requires qualified custody, approvals, and compliance screening before execution.',
+  'Intent: find a reachable asset that is not listed on major exchanges but has verified on-chain liquidity and a safe execution path.',
+  'Intent: move stablecoin value across borders for settlement. Avoid volatile exposure and prioritize reliable redemption paths.',
+  'Intent: execute a small retail swap as cheaply as possible. Speed is less important than low gas and low fees.',
+  'Intent: wallet and asset risk are unclear. Liquidity looks thin and contract identity is ambiguous. Do not execute automatically.',
+  'Intent: validators disagree on the top route and the top-two gap is too narrow. Escalate instead of routing execution.'
+];
+const ARCH=[
+  ['Validator Engines','Nodes run the same local deterministic semantic engine against the same payload and candidate command surface.'],
+  ['Score Surface','Each command receives a coherence score. The winning route and the gap to the next command become part of the oracle output.'],
+  ['Negative Constraints','Prohibitions are first-class: no bridge exposure, no custody risk, no sanctioned counterparty, no auto-execution.'],
+  ['Consensus Bounds','The network accepts a command only when validator outputs stay within defined divergence thresholds.'],
+  ['Execution Interface','Accepted command routes to solvers, bridges, vaults, DEXs, CEXs, custody, compliance, or review gates.'],
+  ['Escalation Path','Narrow gaps, divergent scores, ambiguous assets, or unsafe routes trigger no-route or human-review commands.']
+];
+
+const $=id=>document.getElementById(id);
+const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=v=>String(v||'').replace(/[^a-z0-9+#.\s-]/gi,' ').replace(/\s+/g,' ').trim().toLowerCase();
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+
+function matchRoute(text,i){
+  const n=norm(text);
+  let found=COMMANDS.find(d=>norm(d.candidate)===n||norm(d.name)===n||norm(d.code)===n);
+  if(found)return found;
+  found=COMMANDS.find(d=>norm(d.candidate).includes(n.slice(0,130))||n.includes(norm(d.candidate).slice(0,130))||n.includes(norm(d.name)));
+  return found||COMMANDS[i]||null;
+}
+function normalize(data){
+  const raw=Array.isArray(data)?data:(data&&(data.all||data.top||data.results||data.rankings))||[];
+  const seen=new Set();
+  return raw.map((r,i)=>{
+    const text=String((r&&(r.text!=null?r.text:(r.candidate!=null?r.candidate:(r.name!=null?r.name:''))))||CANDIDATES[i]||'');
+    const score=Number((r&&(r.score!=null?r.score:(r.coherence!=null?r.coherence:r.similarity)))||0);
+    const route=matchRoute(text,i);
+    return route?{text,score,route}:null;
+  }).filter(r=>r&&Number.isFinite(r.score)&&!seen.has(r.route.code)&&seen.add(r.route.code));
+}
+function localScore(query,d){
+  const q=norm(query),hay=norm([d.code,d.name,d.category,d.candidate,...d.tags].join(' '));
+  const tokens=q.split(' ').filter(t=>t.length>2);
+  let hits=0;tokens.forEach(t=>{if(hay.includes(t))hits++});
+  const boosts=[
+    ['solver',d.code==='SOLVER'||d.code==='CROSS_SWAP'],['one outcome',d.code==='SOLVER'||d.code==='CROSS_SWAP'],['bridge',d.category==='Cross-chain'||d.code==='BRIDGE'],['no bridge',d.code==='NEGATIVE'||d.code==='SAFE'],
+    ['minimum slippage',d.code==='OTC'||d.code==='BEST_PRICE'||d.code==='TWAP'],['information leakage',d.code==='OTC'||d.code==='TWAP'],['250k',d.code==='OTC'],['qualified custody',d.code==='CUSTODY'],
+    ['institutional',d.code==='CUSTODY'||d.code==='POLICY'||d.code==='COMPLIANCE'],['compliance',d.code==='COMPLIANCE'||d.code==='POLICY'],['approvals',d.code==='POLICY'],
+    ['not listed',d.code==='DISCOVERY'||d.code==='DEX_AGG'],['verified',d.code==='DISCOVERY'||d.code==='SAFE'],['stablecoin',d.code==='STABLE'],['settlement',d.code==='STABLE'||d.code==='FAST'],
+    ['cheap',d.code==='LOW_FEE'],['low gas',d.code==='LOW_FEE'||d.code==='L2'],['fastest',d.code==='FAST'],['urgent',d.code==='FAST'],['mev',d.code==='MEV'],
+    ['unclear',d.code==='NO_ROUTE'||d.code==='HUMAN'],['ambiguous',d.code==='NO_ROUTE'||d.code==='HUMAN'],['do not execute',d.code==='NO_ROUTE'||d.code==='HUMAN'],['risk',d.code==='SAFE'||d.code==='NO_ROUTE'||d.code==='HUMAN'],
+    ['rebalance',d.code==='REBAL'],['portfolio',d.code==='REBAL'],['twap',d.code==='TWAP'],['limit',d.code==='TWAP'],['validators disagree',d.code==='ORACLE_ESC'],['gap is too narrow',d.code==='ORACLE_ESC'],['negative',d.code==='NEGATIVE'],['must not',d.code==='NEGATIVE']
+  ].reduce((a,[p,ok])=>a+(q.includes(p)&&ok?0.13:0),0);
+  return clamp(.12+Math.min(.44,hits*.028)+boosts+(d.tags.some(t=>q.includes(norm(t)))?.07:0),.04,.94);
+}
+function fallbackRows(query){return COMMANDS.map(d=>({text:d.candidate,score:localScore(query,d),route:d})).sort((a,b)=>b.score-a.score)}
+function rationale(route){
+  const t=route.candidate;
+  let m=t.match(/(Use when[^.]*\.)/i)||t.match(/(Command:[^.]*\.)/i);
+  return (m?m[1]:t.split('. ')[0]+'.').trim();
+}
+function buildArch(){
+  $('archGrid').innerHTML=ARCH.map((s,i)=>'<article class="arch-card"><div class="arch-top"><span>'+String(i+1).padStart(2,'0')+'</span><b>SON</b></div><h3>'+esc(s[0])+'</h3><p>'+esc(s[1])+'</p></article>').join('');
+}
+function buildScenarios(){
+  $('scenarioStrip').innerHTML=EXAMPLES.slice(0,6).map((x,i)=>'<button class="scenario" data-i="'+i+'">'+String(i+1).padStart(2,'0')+' / '+esc(x.replace(/^Intent:\s*/,'').slice(0,72))+'</button>').join('');
+  $('scenarioStrip').querySelectorAll('.scenario').forEach(btn=>btn.onclick=()=>{stopDemo();$('intent').value=EXAMPLES[Number(btn.dataset.i)];autosize();route();});
+}
+
+const rowEls={};
+(function buildRows(){
+  const host=$('ranks');
+  COMMANDS.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='rank';el.dataset.id=d.id;
+    el.innerHTML='<div class="bar"></div><div class="n">--</div><div class="nm">'+esc(d.name)+'</div><div class="sc">·····</div>';
+    host.appendChild(el);rowEls[d.id]=el;
+  });
+})();
+let lastCurl='',routing=false;
+function renderRanks(rows){
+  const sorted=[...rows].sort((a,b)=>b.score-a.score);
+  const max=sorted[0]?sorted[0].score:1,min=sorted[sorted.length-1]?sorted[sorted.length-1].score:0,span=(max-min)||1;
+  const host=$('ranks');
+  const first={};COMMANDS.forEach(d=>first[d.id]=rowEls[d.id].getBoundingClientRect().top);
+  sorted.forEach((r,i)=>{
+    const el=rowEls[r.route.id];
+    el.classList.toggle('top',i===0);
+    el.querySelector('.n').textContent=String(i+1).padStart(2,'0');
+    el.querySelector('.sc').textContent=r.score.toFixed(4);
+    el.querySelector('.bar').style.width=Math.max(3,((r.score-min)/span)*100)+'%';
+    host.appendChild(el);
+  });
+  COMMANDS.forEach(d=>{
+    const el=rowEls[d.id];const last=el.getBoundingClientRect().top;const dy=first[d.id]-last;
+    if(dy){el.style.transition='none';el.style.transform='translateY('+dy+'px)';requestAnimationFrame(()=>{el.style.transition='transform .5s cubic-bezier(.2,.7,.3,1)';el.style.transform='';});}
+  });
+  return sorted;
+}
+function renderVerdict(sorted,ms,mode){
+  const top=sorted[0],second=sorted[1];
+  const gap=top&&second?top.score-second.score:0;
+  const vn=$('verdictName');
+  vn.classList.add('swap');
+  setTimeout(()=>{vn.textContent=top?top.route.name:'—';vn.classList.remove('swap');},170);
+  $('why').textContent=top?rationale(top.route):'';
+  $('mScore').textContent=top?top.score.toFixed(4):'—';
+  $('mGap').textContent=gap.toFixed(4);
+  $('mLat').textContent=ms+'ms';
+  $('mPaths').textContent=sorted.length;
+  $('rcount').textContent=sorted.length;
+  $('mode').textContent=mode;
+  $('navStat').textContent='semantic consensus · '+mode;
+}
+async function route(){
+  if(routing)return;routing=true;
+  const q=$('intent').value.trim()||EXAMPLES[0];
+  updateCode(q);
+  $('tagText').textContent='validating';$('mode').textContent='routing';
+  const t0=performance.now();
+  try{
+    const resp=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,candidates:CANDIDATES})});
+    const data=await resp.json();
+    if(!resp.ok)throw new Error((data&&data.error)||('HTTP '+resp.status));
+    const rows=normalize(data);
+    if(!rows.length)throw new Error('empty ranking');
+    const sorted=renderRanks(rows);
+    renderVerdict(sorted,Math.round(performance.now()-t0),'api');
+    $('tagText').textContent='resolved';
+  }catch(e){
+    const sorted=renderRanks(fallbackRows(q));
+    renderVerdict(sorted,Math.round(performance.now()-t0),'local');
+    $('tagText').textContent='fallback';
+    $('why').textContent=rationale(sorted[0].route)+' API route unavailable; deterministic local fallback shown.';
+  }finally{routing=false;}
+}
+function updateCode(q){
+  const payload={query:q,candidates:['…'+CANDIDATES.length+' semantic command descriptions…']};
+  lastCurl='curl -X POST "'+API+'" \\\n  -H "Content-Type: application/json" \\\n  -d \''+JSON.stringify(payload)+'\'';
+  const pretty=JSON.stringify(payload,null,2).replace(/"(query|candidates)":/g,'<span class="ts">"$1"</span>:').replace(/"(…[^"]*)"/g,'<span class="tu">"$1"</span>');
+  $('codeBlock').innerHTML='<span class="tk">POST</span> <span class="tu">'+esc(API)+'</span>\n<span class="tk">Content-Type</span>: application/json\n\n'+pretty;
+}
+function autosize(){const t=$('intent');t.style.height='auto';t.style.height=Math.max(t.scrollHeight,168)+'px';}
+let userTook=false,demoTimer=null,typeTimer=null,exIdx=0;
+function stopDemo(){userTook=true;clearTimeout(demoTimer);clearTimeout(typeTimer);}
+function typeExample(text,done){
+  const t=$('intent');t.value='';let i=0;
+  (function step(){
+    if(userTook)return;
+    t.value=text.slice(0,i++);autosize();
+    if(i<=text.length){typeTimer=setTimeout(step,20+Math.random()*30);}else done&&done();
+  })();
+}
+function demoCycle(){
+  if(userTook)return;
+  const text=EXAMPLES[exIdx%EXAMPLES.length];exIdx++;
+  typeExample(text,()=>{if(userTook)return;route().then(()=>{if(userTook)return;demoTimer=setTimeout(demoCycle,8200);});});
+}
+['focus','keydown','input'].forEach(ev=>$('intent').addEventListener(ev,()=>{if(!userTook)stopDemo();autosize();clearTimeout(window.__rt);window.__rt=setTimeout(route,650);}));
+$('intent').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();route();}});
+$('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText(lastCurl);$('copyCode').textContent='copied';setTimeout(()=>$('copyCode').textContent='copy',1200)}catch(e){}};
+
+buildArch();
+buildScenarios();
+renderRanks(fallbackRows(EXAMPLES[0]));
+updateCode(EXAMPLES[0]);
+$('mPaths').textContent=COMMANDS.length;
+$('rcount').textContent=COMMANDS.length;
+demoCycle();
+</script>
+</body>
+</html>
