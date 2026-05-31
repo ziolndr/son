@@ -3,8 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SON · Semantic Oracle Network</title>
-<meta name="description" content="SON is a semantic oracle network for validating intent before execution. Commands cost one cent. Raw intent in. Consensus command out." />
+<title>SON.FINANCE · Semantic Router for the Machine Economy</title>
+<meta name="description" content="SON validates raw financial intent before execution. The semantic router for autonomous agents, institutional treasuries, and one-cent command clearing." />
+<link rel="canonical" href="https://son.finance/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://son.finance/" />
+<meta property="og:site_name" content="SON.FINANCE" />
+<meta property="og:title" content="SON.FINANCE · Semantic Router for the Machine Economy" />
+<meta property="og:description" content="Execution is a commodity. Meaning is the monopoly. One cent per semantic command." />
+<meta property="og:image" content="https://son.finance/og-image.png" />
+<meta property="og:image:secure_url" content="https://son.finance/og-image.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="SON.FINANCE — Intent becomes consensus." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="SON.FINANCE · Semantic Router for the Machine Economy" />
+<meta name="twitter:description" content="Execution is a commodity. Meaning is the monopoly. One cent per semantic command." />
+<meta name="twitter:image" content="https://son.finance/og-image.png" />
+<meta name="theme-color" content="#030405" />
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="/favicon.ico">
@@ -65,8 +82,11 @@ a{color:inherit;text-decoration:none}
 .kicker:after{content:"";width:8px;height:8px;background:var(--magenta);display:inline-block;margin-left:2px}
 .poster h1{font-family:var(--disp);font-weight:700;font-size:clamp(86px,16vw,238px);line-height:.74;letter-spacing:-.095em;text-transform:uppercase;margin-top:34px;color:var(--ink)}
 .poster .statement{display:grid;grid-template-columns:minmax(180px,.42fr) minmax(260px,.58fr);gap:36px;align-items:end;margin-top:40px}
-.statement b{font-size:clamp(24px,3vw,40px);line-height:1;letter-spacing:-.04em;text-transform:uppercase;font-weight:700;max-width:11ch}
-.statement p{font-family:var(--mono);font-size:13px;line-height:1.72;color:var(--muted);max-width:68ch}
+.statement b{font-size:clamp(24px,3vw,40px);line-height:1;letter-spacing:-.04em;text-transform:uppercase;font-weight:700;max-width:15ch}
+.statement-copy p{font-family:var(--mono);font-size:13px;line-height:1.72;color:var(--muted);max-width:72ch}
+.trust{margin-top:18px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px 10px;background:var(--paper2)}
+.trust:before{content:"";width:8px;height:8px;background:var(--green);display:inline-block}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.hero-ctas a{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--line);padding:10px 12px;background:var(--ink);color:var(--paper)}.hero-ctas a.secondary{background:transparent;color:var(--ink)}.hero-ctas a:hover{background:var(--green);color:var(--ink)}
 
 .intent-panel{padding:34px 44px 40px;display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:24px;align-items:start}
 .input-box{border:1px solid var(--line);background:var(--paper2)}
@@ -250,7 +270,7 @@ footer b{color:var(--white);font-weight:600}
     <a href="#economics">Gas</a>
     <a href="#api">API</a>
   </nav>
-  <div class="stat" id="navStat">Semantic Oracle Network</div>
+  <div class="stat" id="navStat">Machine Economy · API</div>
 </header>
 
 <main class="hero">
@@ -260,14 +280,18 @@ footer b{color:var(--white);font-weight:600}
       <div class="signal-shapes" aria-hidden="true"><span class="sig a"></span><span class="sig b"></span><span class="sig c"></span><span class="sig d"></span></div>
       <h1>SON</h1>
       <div class="statement">
-        <b>Intent becomes consensus.</b>
-        <p>SON validates meaning before execution. Raw intent is scored by deterministic validator engines, converted into a consensus command, and handed to contracts, solvers, vaults, bridges, or review gates.</p>
+        <b>The semantic router for the machine economy.</b>
+        <div class="statement-copy">
+          <p>Execution is a commodity. Meaning is the monopoly. SON validates raw financial intent before it reaches the blockchain, providing the cognitive routing layer for autonomous agents and institutional treasuries.</p>
+          <div class="trust">Powered by ARBITER · Developed by actualgeneralintelligence.com</div>
+          <div class="hero-ctas"><a href="#economics">Buy Command Credits</a><a class="secondary" href="#architecture">Read the Architecture</a></div>
+        </div>
       </div>
     </div>
     <div class="intent-panel">
       <div class="input-box">
         <div class="input-head"><span>Broadcast raw intent</span><span id="tagText">ready</span></div>
-        <textarea id="intent" rows="3" spellcheck="false" placeholder="Swap across chains with lowest safe slippage and no bridge exposure…"></textarea>
+        <textarea id="intent" rows="3" spellcheck="false" placeholder="Autonomous treasury agent requests stablecoin rebalancing across approved venues…"></textarea>
       </div>
       <aside class="controls">
         <h3>Test payloads</h3>
@@ -296,17 +320,17 @@ footer b{color:var(--white);font-weight:600}
 
 <div class="wrap">
   <section class="thesis">
-    <p>Oracles report facts. <em>SON validates intent.</em></p>
-    <p class="sub">A price oracle answers: what is the asset worth? SON answers: which action coheres with the stated intent, constraints, and risk posture? The result is not prose. It is a ranked command surface: winner, score, gap, and escalation condition.</p>
+    <p>Muscle without a brain <em>is chaos.</em></p>
+    <p class="sub">Solvers can optimize a route, but they cannot validate the meaning behind it. To get humans and autonomous agents on-chain safely, intent has to be scored before execution. SON turns raw desire into a cleared command surface: winner, score, gap, and escalation condition.</p>
   </section>
 
   <section class="section" id="architecture">
     <div class="section-head">
       <div>
         <div class="eyebrow">01 / Architecture</div>
-        <h2>Meaning enters the chain.</h2>
+        <h2>Proof-of-Coherence.</h2>
       </div>
-      <p>SON is not another exchange, wallet, bridge, or solver. It is a semantic validation layer above execution infrastructure. Validators run local deterministic engines and converge on the command that best matches the broadcast intent.</p>
+      <p>Nodes run local deterministic semantic engines to converge on the command that best matches the broadcast intent. Semantic consensus first. Execution second.</p>
     </div>
     <div class="arch" id="archGrid"></div>
   </section>
@@ -314,26 +338,26 @@ footer b{color:var(--white);font-weight:600}
   <section class="section" id="consensus">
     <div class="section-head">
       <div>
-        <div class="eyebrow">02 / Consensus</div>
-        <h2>Proof-of-coherence.</h2>
+        <div class="eyebrow">02 / Safety</div>
+        <h2>A protocol that knows when to stop.</h2>
       </div>
-      <p>Execution should not begin until meaning is resolved. SON compares validator score surfaces, confirms the winning command, verifies the gap, and escalates when semantic consensus is too narrow or divergent.</p>
+      <p>If the gap is too narrow, the asset is ambiguous, or a negative constraint is violated, SON refuses blind execution. Human Review and No Route are first-class commands, not failures.</p>
     </div>
     <div class="diagram">
       <div class="diagram-row"><div class="diagram-label">Input</div><div class="diagram-body"><b>Raw intent</b> plus candidate commands: swap, bridge, settle, custody, review, block, or escalate.</div></div>
-      <div class="diagram-row"><div class="diagram-label">Validation</div><div class="diagram-body"><b>Local engines</b> compute deterministic coherence scores against the same candidate surface.</div></div>
-      <div class="diagram-row"><div class="diagram-label">Consensus</div><div class="diagram-body"><b>Winner + gap</b> are accepted when validator outputs fall inside divergence bounds.</div></div>
-      <div class="diagram-row"><div class="diagram-label">Output</div><div class="diagram-body"><b>Semantic command</b> routes to execution infrastructure or pauses for review.</div></div>
+      <div class="diagram-row"><div class="diagram-label">Score Surface</div><div class="diagram-body"><b>Winner, score, and gap</b> expose whether the command is strong enough to route.</div></div>
+      <div class="diagram-row"><div class="diagram-label">Negative Constraints</div><div class="diagram-body"><b>No unsafe bridge, no unknown asset, no policy breach</b> can be enforced before execution.</div></div>
+      <div class="diagram-row"><div class="diagram-label">Stop State</div><div class="diagram-body"><b>Human Review or No Route</b> protects the system when semantic confidence is insufficient.</div></div>
     </div>
   </section>
 
   <section class="section" id="economics">
     <div class="section-head">
       <div>
-        <div class="eyebrow">03 / Semantic Gas</div>
-        <h2>Commands cost a penny.</h2>
+        <div class="eyebrow">03 / Business Model</div>
+        <h2>Semantic Gas. Predictable at scale.</h2>
       </div>
-      <p>SON is spendable command credit. Users buy SON, spend it per validated command, and the protocol burns or routes the fee. The buyer sees a simple price: one cent per semantic command. The token is plumbing, not the headline.</p>
+      <p>SON is spendable command credit. The user sees a simple price: one cent per semantic command. The token stays in the plumbing while developers and enterprises get predictable API-style usage.</p>
     </div>
     <div class="econ">
       <div class="econ-left">
@@ -371,15 +395,15 @@ footer b{color:var(--white);font-weight:600}
     <div class="section-head">
       <div>
         <div class="eyebrow">04 / Function</div>
-        <h2>Before the solver.</h2>
+        <h2>Solvers execute. SON understands.</h2>
       </div>
-      <p>Solvers optimize execution. SON validates the command. That distinction matters: a system cannot optimize a route until it understands what the user actually asked to preserve, avoid, or accomplish.</p>
+      <p>Solvers, DEXs, CEXs, bridges, and vaults are the limbs. SON is the cognitive routing layer that tells them how to move without tripping over user intent, policy, or risk.</p>
     </div>
     <div class="steps">
       <div class="step"><div class="num">01</div><h3>Broadcast</h3><p>Wallet, dApp, enterprise system, or contract submits raw intent and candidate command surface.</p></div>
       <div class="step"><div class="num">02</div><h3>Score</h3><p>Validators run local deterministic engines and produce coherence scores for each command.</p></div>
-      <div class="step"><div class="num">03</div><h3>Converge</h3><p>Network accepts the winner only when score surfaces and gap metrics satisfy consensus rules.</p></div>
-      <div class="step"><div class="num">04</div><h3>Command</h3><p>Result routes to solver, bridge, vault, custody workflow, compliance lane, human review, or no-route safeguard.</p></div>
+      <div class="step"><div class="num">03</div><h3>Escalate</h3><p>Narrow gaps, ambiguous assets, or policy conflicts become Human Review or No Route instead of forced execution.</p></div>
+      <div class="step"><div class="num">04</div><h3>Route</h3><p>Cleared commands route to solver, bridge, vault, custody workflow, compliance lane, human review, or no-route safeguard.</p></div>
     </div>
     <div class="codewrap" id="api">
       <div class="codehead"><span>POST /public/compare</span><span class="copy" id="copyCode">copy</span></div>
@@ -389,21 +413,21 @@ footer b{color:var(--white);font-weight:600}
 
   <section class="endcap">
     <div class="endcap-grid">
-      <h2>Not another solver.</h2>
-      <p>Solvers compete over execution. SON validates the command before execution exists. It is the layer that says: this is the intended action, this is the score surface, this is the gap, and this is where the system must route next.</p>
+      <h2>The brain before the chain.</h2>
+      <p>Today, a user types a financial intent. Tomorrow, autonomous agents broadcast thousands of intents per second. SON is the semantic throttle, safety valve, and routing cortex that clears meaning before capital moves.</p>
     </div>
   </section>
 </div>
 
 <div class="footer-grid">
-  <div class="footer-cell"><span>Layer</span><b>Semantic Oracle Network</b><p>Protocol surface for validating raw intent before contracts, solvers, bridges, vaults, or review lanes execute.</p></div>
+  <div class="footer-cell"><span>Layer</span><b>Cognitive Routing Layer</b><p>Protocol surface for validating human and agentic intent before contracts, solvers, bridges, vaults, or review lanes execute.</p></div>
   <div class="footer-cell"><span>Primitive</span><b>One Cent Command</b><p>SON is spent as prepaid semantic gas: one cent per resolved command, charged in USD value and consumed in token units.</p></div>
-  <div class="footer-cell"><span>Output</span><b>Consensus Command</b><p>The accepted command routes to execution infrastructure or stops at no-route, policy, or human-review safeguards.</p></div>
+  <div class="footer-cell"><span>Output</span><b>Cleared Command</b><p>The accepted command routes to execution infrastructure or stops at No Route, policy, or Human Review safeguards.</p></div>
 </div>
 
 <footer>
-  <span>SON · Semantic Oracle Network</span>
-  <span><b>Intent in. One cent command out.</b></span>
+  <span>SON.FINANCE · Semantic Oracle Network</span>
+  <span><b>Meaning in. One cent command out.</b></span>
   <span>api.arbiter.traut.ai</span>
 </footer>
 
@@ -439,6 +463,7 @@ const COMMANDS=[
 
 const CANDIDATES=COMMANDS.map(d=>d.candidate);
 const EXAMPLES=[
+  'Intent: autonomous treasury agent requests continuous stablecoin rebalancing across approved venues. Preserve policy limits, avoid unsafe bridges, and escalate if the top-two route gap is narrow.',
   'Intent: swap ETH on mainnet into USDC on Base. User wants one outcome, lowest safe slippage, and does not want to manually choose a bridge or pool.',
   'Intent: acquire $250k of a liquid token with minimum slippage and minimal information leakage. Do not move the market.',
   'Intent: institutional treasury wants exposure to a listed asset but requires qualified custody, approvals, and compliance screening before execution.',
@@ -449,12 +474,12 @@ const EXAMPLES=[
   'Intent: validators disagree on the top route and the top-two gap is too narrow. Escalate instead of routing execution.'
 ];
 const ARCH=[
-  ['Validator Engines','Nodes run the same local deterministic semantic engine against the same payload and candidate command surface.'],
-  ['Score Surface','Each command receives a coherence score. The winning route and the gap to the next command become part of the oracle output.'],
-  ['Negative Constraints','Prohibitions are first-class: no bridge exposure, no custody risk, no sanctioned counterparty, no auto-execution.'],
-  ['Consensus Bounds','The network accepts a command only when validator outputs stay within defined divergence thresholds.'],
-  ['Execution Interface','Accepted command routes to solvers, bridges, vaults, DEXs, CEXs, custody, compliance, or review gates.'],
-  ['Escalation Path','Narrow gaps, divergent scores, ambiguous assets, or unsafe routes trigger no-route or human-review commands.']
+  ['Intent Broadcast','Human wallets, institutional treasuries, dApps, and autonomous agents submit raw financial intent before choosing a route.'],
+  ['ARBITER Engine','Deterministic scoring converts messy intent into a ranked command surface with no hidden preference layer.'],
+  ['Score + Gap','Each command receives a coherence score. The winning route and the gap to the next command become part of the output.'],
+  ['Negative Constraints','No bridge exposure, no custody risk, no sanctioned counterparty, and no auto-execution are treated as hard constraints.'],
+  ['Execution Interface','Cleared commands route to solvers, bridges, vaults, DEXs, CEXs, custody, compliance, or review gates.'],
+  ['Escalation Path','Narrow gaps, divergent scores, ambiguous assets, or unsafe routes trigger No Route or Human Review.']
 ];
 
 const $=id=>document.getElementById(id);
